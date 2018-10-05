@@ -8,8 +8,7 @@
                 <div class="panel-heading">Votaciones 2018</div>
 
                 <div class="panel-body">
-                    Resultados
-                    <?php echo $nombre ?>
+                    Resultados del Conteo de Votos
                 </div>
             </div>
         </div>

@@ -26,7 +26,8 @@ class MesaController extends Controller
             ->addColumn('local_name', function($row){
                 return $row->local->nombre;
             })->addColumn('mostrar_votos', function($mesa){
-                return '<a href="votacion/mostrar/'.$mesa->id_mesa.'" class="btn btn-primary" role="button" aria-pressed="true">Ver votos</a>';
+                return '<a href="votacion/mostrar/'.$mesa->id_mesa.'/1" class="btn btn-primary btn-xs" role="button" aria-pressed="true">Distrital</a>
+                    <a href="votacion/mostrar/'.$mesa->id_mesa.'/2" class="btn btn-primary btn-xs" role="button" aria-pressed="true">Provincial</a>';
             })
             ->make(true);
     }

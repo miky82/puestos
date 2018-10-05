@@ -26,8 +26,6 @@ class HomeController extends Controller
     {
         $request->user()->authorizeRoles(['user', 'admin']);
 
-        $data = array('nombre' => 'Javi');
-
-        return \View::make('home',$data);
+        return \View::make('home');
     }
 }

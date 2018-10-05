@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Candidato extends Model
 {
+    protected $table = 'candidatos as cd';
     protected $fillable = ['nombre', 'representante', 'imagen','tipo_candidato', 'orden'];
     protected $primaryKey = 'id_candidato';
 

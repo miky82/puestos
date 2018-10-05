@@ -22,7 +22,9 @@ Route::get('/', 'HomeController@index');
 Route::get('/mesa', 'MesaController@index');
 Route::get('/mesaLista', 'MesaController@lista');
 
-Route::get('/votacion/mostrar/{id}', 'VotacionController@mostrar');
+Route::get('/votacion/mostrar/{id}/{idp}', 'VotacionController@mostrar');
+Route::post('/guardarVotos','VotacionController@InsOrUpdVotacion');
 
 Route::get('/local', 'LocalController@index');
 Route::get('/localLista', 'LocalController@lista');
+

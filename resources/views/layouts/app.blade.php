@@ -18,7 +18,7 @@
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.10.16/css/dataTables.bootstrap4.min.css">
     {{-- <link href="{{ elixir('css/app.css') }}" rel="stylesheet"> --}}
-
+    @stack('css')
     <style>
         body {
             font-family: 'Lato';

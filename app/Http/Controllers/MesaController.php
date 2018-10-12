@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use Yajra\Datatables;
 use App\Mesa;
+use App\Local;
 
 class MesaController extends Controller
 {
@@ -30,5 +31,13 @@ class MesaController extends Controller
                     <a href="votacion/mostrar/'.$mesa->id_mesa.'/2" class="btn btn-primary btn-xs" role="button" aria-pressed="true">Provincial</a>';
             })
             ->make(true);
+    }
+    public function create()
+    {
+        //$request->user()->authorizeRoles(['user', 'admin']);
+        
+        $locales = Local::all();
+
+        return view ('mesa.create')->with(compact('locales'));
     }
 }

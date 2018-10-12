@@ -21,6 +21,7 @@ Route::get('/', 'HomeController@index');
 
 Route::get('/mesa', 'MesaController@index');
 Route::get('/mesaLista', 'MesaController@lista');
+Route::get('/mesa/create', 'MesaController@create');
 
 Route::get('/votacion/mostrar/{id}/{idp}', 'VotacionController@mostrar');
 Route::post('/guardarVotos','VotacionController@InsOrUpdVotacion');

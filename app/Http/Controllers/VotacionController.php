@@ -20,7 +20,7 @@ class VotacionController extends Controller
     {
         return view('votacion.index');
     }*/
-    public function mostrar($id_mesa,$id_puesto=1)
+    public function mostrar($id_mesa,$id_puesto)
     {
         if(!$id_mesa){return false;}
 
@@ -33,45 +33,57 @@ class VotacionController extends Controller
             ->orderBy('cd.orden', 'asc')
             ->get();
 
-        $total = Votacion::selectRaw('sum(cant_votos) votos_emitidos')
-            ->where('mesa_id',$id_mesa)
-            ->where('puesto_id',$id_puesto)
-            ->first();
+        $total = $this->TotalVotosMesa($id_mesa,$id_puesto);
 
-        $mesa = Mesa::select('numero','id_mesa')->where('id_mesa', '=', $id_mesa)
+        $mesa = Mesa::select('numero','id_mesa','total_electores')->where('id_mesa', '=', $id_mesa)
             ->get()->first();
         $puesto = Puesto::where('id_puesto',$id_puesto)->get()->first();
 
         return \View::make('votacion.index',compact('candidatos', 'mesa','total','puesto'));
     }
-    public function InsOrUpdVotacion()
+
+    private function TotalVotosMesa($mesa, $puesto)
+    {
+        return Votacion::selectRaw('sum(cant_votos) votos_emitidos')
+            ->where('mesa_id',$mesa)
+            ->where('puesto_id',$puesto)
+            ->first();
+    }
+
+    public function InsOrUpdVotacion(Request $request)
     {
         $this->layout = null;
-        //check if its our form
-        if(Request::ajax()){
-            $input = Input::class;
-            print_r($input->get());exit;
-            $name = $input->get('name');
-            //$name = Input::get( 'name' );
-            $content = Input::get( 'message' );
+        if($request->ajax()){
+            $input = $request->except('_token');
+            //dd($request->input());exit;
+            foreach ($input['cantidad_votos_'] as $candidato => $cant) {
+                //if($voto['enable_stock']){
+                    $votoreg = Votacion::select('id_votacion')->where('mesa_id',$input['mesaId'])
+                        ->where('candidato_id',$candidato)->where('puesto_id',$input['puestoId'])->get()->first();
 
-            $comment = new Comment();
-            $comment->author =  $name;
-            $comment->comment_content = $content;
-            $comment->save();
-
-            $postComment = new CommentPost();
-            $postComment->post_id = Input::get('post_id');
-            $postComment->comment_id = Comment::max('id');
-            $postComment->save();
-
+                    if($votoreg){//No existe, entonces insertar:
+                        $votoUpd = Votacion::find($votoreg->id_votacion);
+                        $votoUpd->cant_votos = $cant;
+                        $votoUpd->save(); //this will UPDATE the record with id=1
+                    }else{//No existe, entonces insertar:
+                        $voto = new Votacion();
+                        $voto->mesa_id = $input['mesaId'];
+                        $voto->candidato_id = $candidato;
+                        $voto->puesto_id = $input['puestoId'];
+                        $voto->cant_votos = $cant;
+                        $voto->save();
+                    }
+                //}
+            }
+            $total = $this->TotalVotosMesa($input['mesaId'],$input['puestoId']);
             $response = array(
                 'status' => 'success',
-                'msg' => 'Setting created successfully',
+                'msg' => 'Grabado correctamente',
+                'total' =>$total->votos_emitidos,
             );
-            return 'yea';
+            return $response;
         }else{
-            return 'no';
+            return array('status'=>'error', 'msg'=>'No está autorizado','total' =>$total->votos_emitidos,);
         }
     }
 }
